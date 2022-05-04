@@ -61,9 +61,13 @@ interface IUniswapV2Router01 {
     function factory() external pure returns (address);
     function WETH() external pure returns (address);
 
-    function swapExactTokensForETH(uint amountIn, uint amountOutMin, address[] calldata path, address to, uint deadline)
-        external
-        returns (uint[] memory amounts);
+     function swapExactTokensForTokens(
+        uint amountIn,
+        uint amountOutMin,
+        address[] calldata path,
+        address to,
+        uint deadline
+    ) external returns (uint[] memory amounts);
 }
 
 contract Fund {
@@ -152,14 +156,14 @@ contract Fund {
         address[] memory path = new address[](2);
         path[0] = uniswap.WETH();
         path[1] = usdtAddr;
-        uniswap.swapExactTokensForETH(ethAmount, minUstAmount, path, msg.sender, block.timestamp);
+        uniswap.swapExactTokensForTokens(ethAmount, minUstAmount, path, address(this), deadline);
         uint totalUsdtAmount = _usdt.balanceOf(address(this));
 
         // Set fund
         _originalFundForReward = totalUsdtAmount * 9 / 10;
         _sparedFundForReward = totalUsdtAmount * 8 / 100;
         _sparedFundForXXX = totalUsdtAmount * 2 / 100;
-    }
+    } 
 
     function withdraw() external {
         // Validation
